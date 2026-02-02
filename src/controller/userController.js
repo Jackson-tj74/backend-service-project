@@ -1,6 +1,7 @@
+
 import User from "../models/userModel.js"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import { generateToken } from "../utils/jwtUtil.js"
 
 class Controller{
 
@@ -26,23 +27,25 @@ class Controller{
 }
 
     }
-    static login =async (req,res)=>{
-        const {email,password}=req.body
+    
+    static login = async(req,res)=>{
+        const {email,password} = req.body
         const user = await User.findOne({email})
-        if(!user){
-            return res.status(404).json({message:"Invalid email"})
+            if(!user){
+            return res.status(404).json({message:"User not found"}) 
         }else{
             const comparePassword = bcrypt.compareSync(password,user.password)
             if(!comparePassword){
-                return res.status(404).json({message:"Invalid password"})
+                return res.status(403).json({message:"Invalid password"})
             }else{
-                const token = jwt.sign({user:user},process.env.SECRET_KEY,{expiresIn:"1d"})
-                return res.status(200).json({message:"user logged in successfully",token})
+               
+                const token = generateToken(user?.id)
+                return res.status(201).json({message:"User login successfully",token})
             }
         }
-        
-
     }
+
+    
     static getAllUsers =async (req,res)=>{
         const users = await User.find()
         if(!users){
