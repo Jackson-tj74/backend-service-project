@@ -4,9 +4,9 @@ import Controller from "../controller/userController.js";
 import { VerifyAcess } from "../midleware/verifyAcess.js";
 
 const router = express.Router();
-router.post("/user",EmailExist,Controller.signup)
-router.post("/user/login",Controller.login)
-router.get("/users",VerifyAcess('admin'),Controller.getAllUsers)
+router.post("/create",EmailExist,Controller.signup)
+router.post("/login",Controller.login)
+router.get("/users",Controller.getAllUsers)
 
 
 router.delete("/deleteUser/:id",Controller.deleteOneUser)

@@ -1,6 +1,7 @@
 
 import mongoose  from "mongoose";
-import Category from "./categoryModel";
+import Category from "./categoryModel.js";
+import User from "./userModel.js";
 
 
 const serviceSchema= mongoose.Schema({
@@ -12,7 +13,7 @@ const serviceSchema= mongoose.Schema({
         type:String,
         required:[true,"please description is required"]
     },
-    categorys:{
+    categoryId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category"
 
@@ -21,16 +22,16 @@ const serviceSchema= mongoose.Schema({
         type:Number,
         required:[true,"please price required"]
     },
-    provider:{
+    providerId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     }
 })
 serviceSchema.pre(/^find/,function(){
     this.populate(
-        {path:"categorys",select:"categoryName"}
+        {path:"categoryId",select:"categoryName"}
     ).populate(
-    {path:"provider",select:"names email"}
+    {path:"providerId",select:"names email"}
     )
 })
 const Service = mongoose.model("Service",serviceSchema)
