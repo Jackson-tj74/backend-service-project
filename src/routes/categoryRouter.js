@@ -2,9 +2,11 @@ import express from "express"
 import CategoryController from "../controller/categoryController.js"
 import { CategoryExist } from "../midleware/validation.js"
 import { VerifyAcess } from "../midleware/verifyAcess.js"
+import { routeBodyValidation } from "../midleware/requestValidation.js"
+import { createCategoryValidation } from "../validation/validation.js"
 
 const router = express.Router()
-router.post("/create",VerifyAcess('provider'),CategoryExist,CategoryController.createCategory)
+router.post("/create",routeBodyValidation(createCategoryValidation),VerifyAcess('provider'),CategoryExist,CategoryController.createCategory)
 router.get("/getAllCategories",CategoryController.getAllCategories)
 
 router.delete("/deleteOneCategory/:id",CategoryController.deleteOneCategory)
