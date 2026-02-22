@@ -1,19 +1,20 @@
 
 import { error } from "console"
-import User from "../models/userModel.js"
 import Category from "../models/categoryModel.js"
 import Service from "../models/serviceModel.js"
+import User from "../models/userModel.js"
 
-export const EmailExist = async(req,res,next)=>{
-    const email=req.body
-    const user = await User.findOne(email)
+export const EmailExist = async (req,res,next)=>{
+   
+    const {email}=req.body
+    const user = await User.findOne({email})
     if(user){
-        return res.status(403).json({message:"user already exist "})
+        return res.status(404).json({status:404,message:"User already exist"})
     }else{
         next()
     }
-
 }
+
 export const CategoryExist = async(req,res,next)=>{
     const categoryName=req.body
     const category= await Category.findOne(categoryName)

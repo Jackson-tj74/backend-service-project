@@ -4,36 +4,36 @@ import Service from "../models/serviceModel.js"
 
 
 class ServiceController{
-    static createService = async(req,res)=>{
-     const {title,description,categoryId,price}=req.body
-     try{
-
-     const category=await Category.findById(categoryId)
-     if(!category){
-        return res.status(404).json({massege:"Category not found"})
-     }else{
-        const userId=req.user?._id
-        if(!userId){
-            return res.status(404).json({message:"Login please"})
+   
+    static CreateService = async (req,res)=>{
+        const {title,description,price,categoryId} = req.body
+        const category = await Category.findById(categoryId)
+        if(!category){
+           return res.status(404).json({message:"Category not found"})
         }
-         let  service = await Service.create({
+        const userId = req.user?.id
+        if(!userId){
+            return res.status(403).json({message:"Unauthenticated"})
+        }
+        const service = await Service.findOne({title})
+        if(service){
+            return res.status(403).json({message:"Services arlready exist"})
+        }
+        let newService = await Service.create({
             title,
             description,
             categoryId,
             price,
-            providerId:userId
-
+            providerId: userId,
         })
-         service = await service.populate([
+        newService = await newService.populate([
             {path:"categoryId",select:"categoryName"},
-            {path:"providerId",select:"names email"},
-        ])
-        return res.status(200).json({message:"service created succefully",service})
-     }
-    }catch(error){
-        return res.status(500).json({message:error.message})
+            {path:"providerId",select:"names email"}
+        ]);
+         return res.status(201).json({message: 'Service successfully created',newService,});
+
     }
-    }
+
      static getAllServices = async (req, res) => {
         const services = await Service.find()
         if (!services) {

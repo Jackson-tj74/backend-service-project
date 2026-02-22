@@ -1,38 +1,46 @@
-
-import mongoose  from "mongoose";
+import mongoose from "mongoose";
 import Category from "./categoryModel.js";
 import User from "./userModel.js";
 
 
-const serviceSchema= mongoose.Schema({
+
+
+const ServiceSchema = new mongoose.Schema({
+
     title:{
         type:String,
-        required:[true,"please title required"]
+        required:[true,'Please service title is required']
     },
     description:{
         type:String,
-        required:[true,"please description is required"]
+        required:[true,'Please service description is required']
     },
     categoryId:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:mongoose.Types.ObjectId,
         ref:"Category"
-
     },
     price:{
-        type:Number,
-        required:[true,"please price required"]
+            type:Number,
+            required:[true,'Service price is required'],
+        
     },
     providerId:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:mongoose.Types.ObjectId,
         ref:"User"
-    }
+    },
+    createAt:{
+        type:Date,
+        default: new Date(Date.now())
+    },
+    
 })
-serviceSchema.pre(/^find/,function(){
+ ServiceSchema.pre(/^find/,function(){
     this.populate(
         {path:"categoryId",select:"categoryName"}
     ).populate(
-    {path:"providerId",select:"names email"}
-    )
-})
-const Service = mongoose.model("Service",serviceSchema)
-export default Service
+        {path:"providerId",select:"names email"}
+    );
+ });
+
+ const Service = mongoose.model("Service",ServiceSchema)
+ export default Service;
